@@ -56,19 +56,5 @@ You can then access the interactive documentation at:
 Run the test suite using pytest via uv:
 
 ```bash
-$env:PYTHONPATH = '.'; uv run pytest tests
+uv run pytest tests
 ```
-
-(Note: For Windows PowerShell use `$env:PYTHONPATH = '.'`, for Linux/macOS use `PYTHONPATH=.`).
-
-## Documentation conventions
-
-This `README.md` follows these documentation conventions:
-
-- **Sentence case headings:** All headings use sentence case (e.g., "Documentation conventions").
-- **Second person tone:** The documentation addresses you, the reader, directly using "you".
-- **Present tense:** The text uses the present tense to describe the current state and actions.
-- **Short and focused structure:** Paragraphs are kept concise and focused on a single topic.
-- **Tagged code blocks:** All code blocks include language tags for proper syntax highlighting.
-- **Practical examples:** Functional examples are provided for common tasks like installation and execution.
-- **Google Developer Documentation Style Guide:** The overall style aligns with the standard Google developer documentation guidelines.
