@@ -1,0 +1,29 @@
+# Set the default behavior to handle all files as text and automatically
+# convert them to LF on check-in and preserve LF on checkout.
+* text=auto eol=lf
+
+# Force specific file types to LF
+*.py text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.lock text eol=lf
+.gitignore text eol=lf
+.python-version text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.flv binary
+*.fla binary
+*.swf binary
+*.gz binary
+*.zip binary
+*.7z binary
+*.ttf binary
+*.pyc binary

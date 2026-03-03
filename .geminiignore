@@ -1,0 +1,16 @@
+# Ignore build artifacts and virtual environments (already in .gitignore, but good to be explicit for AI)
+__pycache__/
+.venv/
+build/
+dist/
+
+# Ignore sensitive files
+.env
+
+# Ignore lock files and configuration files that are not needed for context
+uv.lock
+pyproject.toml
+.python-version
+
+# Ignore the .git directory
+.git/
