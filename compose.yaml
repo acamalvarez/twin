@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Pydantic BaseSettings in app.core.config reads from .env by default
+      # and includes GEMINI_API_KEY, MODEL, etc., depending on configuration.
+      # You can also set/override environment variables here:
+      - PORT=8080
+    env_file:
+      - .env
+    volumes:
+      # Mount the application directory for live reloading locally without rebuilding
+      - ./app:/app/app
