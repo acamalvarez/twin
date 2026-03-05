@@ -17,9 +17,7 @@ def test_chat_stream(client: TestClient, mocker: MockerFixture) -> None:
     mock_chunk2 = MagicMock()
     mock_chunk2.text = " world!"
 
-    mock_get_chat_stream = mocker.patch(
-        "app.api.v1.chat.get_chat_stream", return_value=[mock_chunk1, mock_chunk2]
-    )
+    mock_get_chat_stream = mocker.patch("app.api.v1.chat.get_chat_stream", return_value=[mock_chunk1, mock_chunk2])
 
     payload = {"message": "Test message"}
     response = client.post("/", json=payload)

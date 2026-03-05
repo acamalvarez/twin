@@ -18,9 +18,7 @@ def test_get_chat_stream(mocker: MockerFixture) -> None:
     mock_chunk.text = "Mocked AI response"
 
     # mocker.patch.object to mock the stream method on the client instance
-    mock_stream_method = mocker.patch.object(
-        genai_client.models, "generate_content_stream", return_value=[mock_chunk]
-    )
+    mock_stream_method = mocker.patch.object(genai_client.models, "generate_content_stream", return_value=[mock_chunk])
 
     prompt = "Test prompt"
     stream = get_chat_stream(prompt)
