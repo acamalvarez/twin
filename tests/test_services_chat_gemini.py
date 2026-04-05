@@ -33,3 +33,26 @@ def test_get_chat_stream(mocker: MockerFixture) -> None:
         model=config.model,
         contents=prompt,
     )
+
+
+def test_get_chat_stream_error(mocker):
+    import pytest
+    from google.genai.errors import APIError
+
+    # Mock the generate_content_stream to raise an exception
+    mock_stream_method = mocker.patch.object(
+        genai_client.models,
+        "generate_content_stream",
+        side_effect=APIError(code=500, response_json={"error": {"message": "API error"}})
+    )
+
+    prompt = "Test prompt"
+
+    with pytest.raises(APIError, match="API error"):
+        get_chat_stream(prompt)
+
+    # Ensure it was called with the correct parameters
+    mock_stream_method.assert_called_once_with(
+        model=config.model,
+        contents=prompt,
+    )
