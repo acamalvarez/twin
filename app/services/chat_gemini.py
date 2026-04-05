@@ -1,3 +1,4 @@
+import functools
 from collections.abc import Iterator
 
 from google import genai
@@ -6,6 +7,7 @@ from google.genai.types import GenerateContentResponse
 from app.core.config import config
 
 
+@functools.cache
 def get_genai_client() -> genai.Client:
     return genai.Client(vertexai=True)
 
