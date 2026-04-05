@@ -28,6 +28,7 @@ def test_get_chat_stream() -> None:
     mock_client.models.generate_content_stream.assert_called_once_with(
         model=config.model,
         contents=prompt,
+        config=config.content_config,
     )
 
 
@@ -50,4 +51,5 @@ def test_get_chat_stream_error() -> None:
     mock_client.models.generate_content_stream.assert_called_once_with(
         model=config.model,
         contents=prompt,
+        config=config.content_config,
     )
