@@ -1,23 +1,27 @@
-from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
+from collections.abc import Generator
 
-from app.services.chat_gemini import get_chat_stream
+from fastapi import APIRouter, Depends
+from fastapi.responses import StreamingResponse
+from google import genai
+
 from app.models.chat import ChatRequest
+from app.services.chat_gemini import get_chat_stream, get_genai_client
 
 router = APIRouter()
 
 
 @router.post("/")
-async def chat(request: ChatRequest):
-    response = get_chat_stream(request.message)
+async def chat(request: ChatRequest, client: genai.Client = Depends(get_genai_client)) -> StreamingResponse:
+    response = get_chat_stream(request.message, client)
 
-    def generate():
+    def generate() -> Generator[str, None, None]:
         for chunk in response:
-            yield chunk.text
+            if chunk.text is not None:
+                yield chunk.text
 
     return StreamingResponse(generate())
 
 
 @router.get("/health")
-async def health():
+async def health() -> dict[str, str]:
     return {"status": "healthy"}
