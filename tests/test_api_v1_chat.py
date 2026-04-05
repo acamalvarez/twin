@@ -24,4 +24,4 @@ def test_chat_stream(client: TestClient, mocker: MockerFixture) -> None:
     assert response.status_code == 200
     # StreamingResponse is collected as a single response in TestClient
     assert response.text == "Hello world!"
-    mock_get_chat_stream.assert_called_once_with("Test message")
+    mock_get_chat_stream.assert_called_once_with("Test message", mocker.ANY)
