@@ -4,6 +4,7 @@
 - **Focus on streaming:** Prioritize streaming responses when implementing or modifying AI features.
 - **Async-first:** Use asynchronous patterns (`async`/`await`) for all API and AI service logic.
 - **Pydantic-based configuration:** Manage all environment variables and configuration settings using Pydantic `BaseSettings`.
+- **Verification:** After making code changes, always run `uv run ruff check --fix .`, `uv run ruff format .`, `uv run mypy .`, and `uv run pytest tests` to verify codebase standards are met before concluding the task.
 
 ## Security
 - **Input Validation:** Use Pydantic's `Annotated` and `StringConstraints` to strictly validate all incoming user messages (e.g., `min_length`, `max_length`, `strip_whitespace`).
