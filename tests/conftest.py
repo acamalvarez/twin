@@ -1,7 +1,8 @@
-import pytest
 from collections.abc import Iterator
-from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
+
+import pytest
+from fastapi.testclient import TestClient
 
 from app.main import app
 from app.services.chat_gemini import get_genai_client

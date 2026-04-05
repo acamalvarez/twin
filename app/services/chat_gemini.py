@@ -5,6 +5,7 @@ from google.genai.types import GenerateContentResponse
 
 from app.core.config import config
 
+
 def get_genai_client() -> genai.Client:
     return genai.Client(api_key=config.google_api_key)
 

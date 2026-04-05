@@ -36,7 +36,7 @@ def test_get_chat_stream_error() -> None:
     from google.genai.errors import APIError
 
     mock_client = MagicMock()
-    
+
     mock_client.models.generate_content_stream.side_effect = APIError(
         code=500, response_json={"error": {"message": "API error"}}
     )
