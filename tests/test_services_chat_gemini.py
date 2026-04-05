@@ -43,7 +43,7 @@ def test_get_chat_stream_error(mocker):
     mock_stream_method = mocker.patch.object(
         genai_client.models,
         "generate_content_stream",
-        side_effect=APIError(code=500, response_json={"error": {"message": "API error"}})
+        side_effect=APIError(code=500, response_json={"error": {"message": "API error"}}),
     )
 
     prompt = "Test prompt"

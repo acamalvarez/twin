@@ -10,16 +10,19 @@ def test_chat_request_valid():
     assert request.message == "Hello, world!"
     assert request.session_id == "session-123"
 
+
 def test_chat_request_valid_no_session_id():
     """Test valid ChatRequest creation without session_id."""
     request = ChatRequest(message="Hello, world!")
     assert request.message == "Hello, world!"
     assert request.session_id is None
 
+
 def test_chat_request_strip_whitespace():
     """Test that message whitespace is stripped."""
     request = ChatRequest(message="  Hello, world!  ")
     assert request.message == "Hello, world!"
+
 
 def test_chat_request_empty_message():
     """Test validation fails for empty message."""
@@ -27,11 +30,13 @@ def test_chat_request_empty_message():
         ChatRequest(message="")
     assert "String should have at least 1 character" in str(exc_info.value)
 
+
 def test_chat_request_whitespace_only_message():
     """Test validation fails for whitespace-only message (since it's stripped)."""
     with pytest.raises(ValidationError) as exc_info:
         ChatRequest(message="   ")
     assert "String should have at least 1 character" in str(exc_info.value)
+
 
 def test_chat_request_message_too_long():
     """Test validation fails for message exceeding max_length."""
@@ -39,6 +44,7 @@ def test_chat_request_message_too_long():
     with pytest.raises(ValidationError) as exc_info:
         ChatRequest(message=long_message)
     assert "String should have at most 4096 characters" in str(exc_info.value)
+
 
 def test_chat_request_missing_message():
     """Test validation fails when message is omitted."""
