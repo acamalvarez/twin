@@ -8,4 +8,3 @@ class ChatRequest(BaseModel):
         str,
         StringConstraints(strip_whitespace=True, min_length=1, max_length=4096),
     ]
-    session_id: str | None = None
