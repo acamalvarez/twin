@@ -1,7 +1,9 @@
 from unittest.mock import MagicMock
 
+from pytest_mock import MockerFixture
+
 from app.core.config import config
-from app.services.chat_gemini import get_chat_stream
+from app.services.chat_gemini import get_chat_stream, get_genai_client
 
 
 def test_config_defaults() -> None:
@@ -30,6 +32,31 @@ def test_get_chat_stream() -> None:
         contents=prompt,
         config=config.content_config,
     )
+
+
+def test_get_genai_client(mocker: MockerFixture) -> None:
+    # Clear the cache before the test to ensure clean state
+    get_genai_client.cache_clear()
+
+    # Mock the genai.Client class
+    mock_client_cls = mocker.patch("app.services.chat_gemini.genai.Client")
+
+    # First call
+    client1 = get_genai_client()
+
+    # Verify the mock was called correctly
+    mock_client_cls.assert_called_once_with(vertexai=True)
+    assert client1 == mock_client_cls.return_value
+
+    # Second call to verify caching
+    client2 = get_genai_client()
+
+    # Verify the mock was NOT called again
+    mock_client_cls.assert_called_once()
+    assert client1 is client2
+
+    # Clear the cache after the test
+    get_genai_client.cache_clear()
 
 
 def test_get_chat_stream_error() -> None:
