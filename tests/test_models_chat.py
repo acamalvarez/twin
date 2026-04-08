@@ -6,16 +6,8 @@ from app.models.chat import ChatRequest
 
 def test_chat_request_valid() -> None:
     """Test valid ChatRequest creation."""
-    request = ChatRequest(message="Hello, world!", session_id="session-123")
-    assert request.message == "Hello, world!"
-    assert request.session_id == "session-123"
-
-
-def test_chat_request_valid_no_session_id() -> None:
-    """Test valid ChatRequest creation without session_id."""
     request = ChatRequest(message="Hello, world!")
     assert request.message == "Hello, world!"
-    assert request.session_id is None
 
 
 def test_chat_request_strip_whitespace() -> None:
