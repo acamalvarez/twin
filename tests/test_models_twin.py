@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.models.chat import ChatRequest
+from app.models.twin import ChatRequest
 
 
 def test_chat_request_valid() -> None:

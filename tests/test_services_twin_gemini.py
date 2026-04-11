@@ -5,7 +5,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from app.core.config import config
-from app.services.chat_gemini import get_chat_stream, get_genai_client
+from app.services.twin_gemini import get_chat_stream, get_genai_client
 
 
 def test_config_defaults() -> None:
@@ -45,7 +45,7 @@ def test_get_genai_client(mocker: MockerFixture) -> None:
     get_genai_client.cache_clear()
 
     # Mock the genai.Client class
-    mock_client_cls = mocker.patch("app.services.chat_gemini.genai.Client")
+    mock_client_cls = mocker.patch("app.services.twin_gemini.genai.Client")
 
     # First call
     client1 = get_genai_client()

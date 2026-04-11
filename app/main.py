@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 
-from app.api.v1 import chat
+from app.api.v1.api import api_router
 
-app = FastAPI()
+app = FastAPI(title="Acalmo API")
 
-app.include_router(chat.router)
+app.include_router(api_router, prefix="/api/v1")
+
+
+@app.get("/health", tags=["Health"])
+async def health() -> dict[str, str]:
+    return {"status": "healthy"}

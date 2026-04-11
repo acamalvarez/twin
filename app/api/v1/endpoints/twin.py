@@ -4,13 +4,13 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from google import genai
 
-from app.models.chat import ChatRequest
-from app.services.chat_gemini import get_chat_stream, get_genai_client
+from app.models.twin import ChatRequest
+from app.services.twin_gemini import get_chat_stream, get_genai_client
 
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("/chat")
 async def chat(request: ChatRequest, client: genai.Client = Depends(get_genai_client)) -> StreamingResponse:
     response = await get_chat_stream(request.message, client)
 
@@ -20,8 +20,3 @@ async def chat(request: ChatRequest, client: genai.Client = Depends(get_genai_cl
                 yield chunk.text
 
     return StreamingResponse(generate(), media_type="text/event-stream")
-
-
-@router.get("/health")
-async def health() -> dict[str, str]:
-    return {"status": "healthy"}
