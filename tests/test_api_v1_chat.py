@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
@@ -17,7 +18,7 @@ def test_chat_stream(client: TestClient, mocker: MockerFixture) -> None:
     mock_chunk2 = MagicMock()
     mock_chunk2.text = " world!"
 
-    async def mock_generate():
+    async def mock_generate() -> AsyncGenerator[MagicMock, None]:
         yield mock_chunk1
         yield mock_chunk2
 
@@ -40,7 +41,7 @@ def test_chat_stream_missing_text_chunk(client: TestClient, mocker: MockerFixtur
     mock_chunk3 = MagicMock()
     mock_chunk3.text = " world!"
 
-    async def mock_generate():
+    async def mock_generate() -> AsyncGenerator[MagicMock, None]:
         yield mock_chunk1
         yield mock_chunk2
         yield mock_chunk3

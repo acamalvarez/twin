@@ -1,5 +1,7 @@
-from unittest.mock import MagicMock
+from collections.abc import AsyncGenerator
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 from pytest_mock import MockerFixture
 
 from app.core.config import config
@@ -11,18 +13,13 @@ def test_config_defaults() -> None:
     assert config.model == "gemini-3-flash-preview"
 
 
-from unittest.mock import AsyncMock
-
-import pytest
-
-
 @pytest.mark.asyncio
 async def test_get_chat_stream() -> None:
     mock_client = MagicMock()
     mock_chunk = MagicMock()
     mock_chunk.text = "Mocked AI response"
 
-    async def mock_generate():
+    async def mock_generate() -> AsyncGenerator[MagicMock, None]:
         yield mock_chunk
 
     mock_client.aio.models.generate_content_stream = AsyncMock(return_value=mock_generate())
