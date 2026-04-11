@@ -36,7 +36,9 @@ def test_chat_stream_missing_text_chunk(client: TestClient, mocker: MockerFixtur
     mock_chunk3 = MagicMock()
     mock_chunk3.text = " world!"
 
-    mock_get_chat_stream = mocker.patch("app.api.v1.chat.get_chat_stream", return_value=[mock_chunk1, mock_chunk2, mock_chunk3])
+    mock_get_chat_stream = mocker.patch(
+        "app.api.v1.chat.get_chat_stream", return_value=[mock_chunk1, mock_chunk2, mock_chunk3]
+    )
 
     payload = {"message": "Test message"}
     response = client.post("/", json=payload)

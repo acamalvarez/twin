@@ -1,4 +1,4 @@
-from collections.abc import Generator
+from collections.abc import AsyncGenerator
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
@@ -12,14 +12,14 @@ router = APIRouter()
 
 @router.post("/")
 async def chat(request: ChatRequest, client: genai.Client = Depends(get_genai_client)) -> StreamingResponse:
-    response = get_chat_stream(request.message, client)
+    response = await get_chat_stream(request.message, client)
 
-    def generate() -> Generator[str, None, None]:
-        for chunk in response:
+    async def generate() -> AsyncGenerator[str, None]:
+        async for chunk in response:
             if chunk.text is not None:
                 yield chunk.text
 
-    return StreamingResponse(generate())
+    return StreamingResponse(generate(), media_type="text/event-stream")
 
 
 @router.get("/health")
