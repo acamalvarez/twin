@@ -11,8 +11,10 @@ def test_config_defaults() -> None:
     assert config.model == "gemini-3-flash-preview"
 
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
 
 @pytest.mark.asyncio
 async def test_get_chat_stream() -> None:
@@ -39,6 +41,7 @@ async def test_get_chat_stream() -> None:
         contents=prompt,
         config=config.content_config,
     )
+
 
 def test_get_genai_client(mocker: MockerFixture) -> None:
     # Clear the cache before the test to ensure clean state
@@ -71,9 +74,9 @@ async def test_get_chat_stream_error() -> None:
 
     mock_client = MagicMock()
 
-    mock_client.aio.models.generate_content_stream = AsyncMock(side_effect=APIError(
-        code=500, response_json={"error": {"message": "API error"}}
-    ))
+    mock_client.aio.models.generate_content_stream = AsyncMock(
+        side_effect=APIError(code=500, response_json={"error": {"message": "API error"}})
+    )
 
     prompt = "Test prompt"
 
