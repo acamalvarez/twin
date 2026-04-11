@@ -22,10 +22,10 @@ def test_chat_stream(client: TestClient, mocker: MockerFixture) -> None:
         yield mock_chunk1
         yield mock_chunk2
 
-    mock_get_chat_stream = mocker.patch("app.api.v1.chat.get_chat_stream", return_value=mock_generate())
+    mock_get_chat_stream = mocker.patch("app.api.v1.endpoints.twin.get_chat_stream", return_value=mock_generate())
 
     payload = {"message": "Test message"}
-    response = client.post("/", json=payload)
+    response = client.post("/api/v1/twin/chat", json=payload)
     assert response.status_code == 200
     # StreamingResponse is collected as a single response in TestClient
     assert response.text == "Hello world!"
@@ -46,10 +46,10 @@ def test_chat_stream_missing_text_chunk(client: TestClient, mocker: MockerFixtur
         yield mock_chunk2
         yield mock_chunk3
 
-    mock_get_chat_stream = mocker.patch("app.api.v1.chat.get_chat_stream", return_value=mock_generate())
+    mock_get_chat_stream = mocker.patch("app.api.v1.endpoints.twin.get_chat_stream", return_value=mock_generate())
 
     payload = {"message": "Test message"}
-    response = client.post("/", json=payload)
+    response = client.post("/api/v1/twin/chat", json=payload)
     assert response.status_code == 200
     # StreamingResponse is collected as a single response in TestClient
     # The chunk with None text should be ignored
