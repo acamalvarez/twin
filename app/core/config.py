@@ -6,6 +6,13 @@ class Config(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     model: str = "gemini-3-flash-preview"
     twin_instructions: str = ""
+    cors_origins: list[str] = [
+        "http://localhost:8001",
+        "http://127.0.0.1:8001",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "https://acalmo.me",
+    ]
 
     @property
     def content_config(self) -> GenerateContentConfig:
