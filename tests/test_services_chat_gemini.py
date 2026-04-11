@@ -11,7 +11,7 @@ def test_config_defaults() -> None:
     assert config.model == "gemini-3-flash-preview"
 
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 
