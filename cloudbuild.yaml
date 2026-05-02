@@ -55,7 +55,7 @@ substitutions:
   _SERVICE_ACCOUNT: 'acalmo-api-sa@${PROJECT_ID}.iam.gserviceaccount.com'
   _COMMON_FLAGS: >-
     --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${_SERVICE_REGION}
-    --set-secrets=TWIN_INSTRUCTIONS=twin-instructions-secret:latest
+    --set-secrets=TWIN_INSTRUCTIONS=twin-instructions-secret:latest,CORS_ORIGINS=cors-origins-secret:latest
 
 options:
   logging: CLOUD_LOGGING_ONLY

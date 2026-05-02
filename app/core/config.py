@@ -1,4 +1,5 @@
 from google.genai.types import GenerateContentConfig
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -6,13 +7,16 @@ class Config(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     model: str = "gemini-2.5-flash"
     twin_instructions: str = ""
-    cors_origins: list[str] = [
-        "http://localhost:8001",
-        "http://127.0.0.1:8001",
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "https://acalmo.me",
-    ]
+    cors_origins: str | list[str] = ""
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: str | list[str]) -> list[str]:
+        if isinstance(v, str):
+            return [i.strip() for i in v.split(",") if i.strip()]
+        if isinstance(v, list):
+            return v
+        return []
 
     @property
     def content_config(self) -> GenerateContentConfig:
