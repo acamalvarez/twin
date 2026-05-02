@@ -27,6 +27,9 @@ RUN uv sync --frozen --no-dev
 # Using a smaller base image for the runtime
 FROM python:3.14-slim
 
+# Install uv for the runtime so we can use `uv run` as per project rules
+COPY --from=ghcr.io/astral-sh/uv:0.4.15 /uv /uvx /bin/
+
 # Set standard python environment variables for production
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -36,7 +39,7 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 
 # Create a non-root user and group for security
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+RUN groupadd -r appgroup && useradd -r -m -g appgroup appuser
 
 # Copy the application from the builder and set ownership
 COPY --from=builder --chown=appuser:appgroup /app /app
@@ -49,4 +52,4 @@ EXPOSE 8080
 
 # Run the application using uvicorn.
 # We use sh -c to allow environment variable substitution for $PORT, which is required by Cloud Run.
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+CMD ["sh", "-c", "uv run uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
