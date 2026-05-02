@@ -10,7 +10,7 @@ from app.services.twin_gemini import get_chat_stream, get_genai_client
 
 def test_config_defaults() -> None:
     # Verify that config loads with the expected default value
-    assert config.model == "gemini-3-flash-preview"
+    assert config.model == "gemini-2.5-flash"
 
 
 @pytest.mark.asyncio
