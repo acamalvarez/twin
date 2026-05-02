@@ -48,7 +48,7 @@ images:
 - '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:latest'
 
 substitutions:
-  _SERVICE_NAME: 'acalmo-api'
+  _SERVICE_NAME: 'acalmo-api-service'
   _SERVICE_REGION: 'us-central1'
   _REPOSITORY: 'acalmo-api'
   _IMAGE: 'acalmo-api'
