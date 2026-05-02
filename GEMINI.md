@@ -1,9 +1,10 @@
-# Project: Twin
+# Project: Acalmo API
 
 ## General instructions
 - **Focus on streaming:** Prioritize streaming responses when implementing or modifying AI features.
 - **Async-first:** Use asynchronous patterns (`async`/`await`) for all API and AI service logic.
 - **Pydantic-based configuration:** Manage all environment variables and configuration settings using Pydantic `BaseSettings`.
+- **Modular architecture:** This project uses a multi-objective, domain-based structure under `app/api/v1/endpoints/`. Each domain (e.g., `twin`) has its own endpoint, model, and service files. When adding new features, create new domain modules rather than expanding existing ones.
 - **Verification:** After making code changes, always run `uv run ruff check --fix .`, `uv run ruff format .`, `uv run mypy .`, and `uv run pytest tests` to verify codebase standards are met before concluding the task.
 
 ## Security
@@ -26,8 +27,25 @@
 - **Mocking:** Use `pytest-mock` (mocker) to mock all external AI services and dependencies to ensure fast and deterministic tests.
 
 ## Development Workflow
-- **Run Development Server:** `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8080`
+- **Run Development Server:** `uv run fastapi dev .\app\main.py`
+- **Run Production Server:** `uv run uvicorn app.main:app --host 0.0.0.0 --port 8080`
 - **Run Tests:** `$env:PYTHONPATH = '.'; uv run pytest tests`
 - **Install Dependencies:** `uv sync`
-- **Docker Build:** `docker build -t twin-app .`
+- **Docker Build:** `docker build -t acalmo-api .`
 - **Docker Compose Up:** `docker compose up`
+
+## Project Structure
+```
+app/
+├── api/v1/
+│   ├── api.py              # Central v1 router aggregating all domain routers
+│   └── endpoints/
+│       └── twin.py         # Digital Twin chat endpoint (POST /api/v1/twin/chat)
+├── core/
+│   └── config.py           # Pydantic BaseSettings configuration
+├── models/
+│   └── twin.py             # Request/response models for the twin domain
+├── services/
+│   └── twin_gemini.py      # Vertex AI Gemini service for the twin domain
+└── main.py                 # FastAPI app entry point with global health endpoint
+```

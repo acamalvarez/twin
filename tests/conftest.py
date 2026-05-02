@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services.chat_gemini import get_genai_client
+from app.services.twin_gemini import get_genai_client
 
 
 @pytest.fixture

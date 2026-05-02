@@ -1,0 +1,62 @@
+steps:
+# 1. Pull the latest image to use as a cache source
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      docker pull ${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:latest || exit 0
+  id: 'pull-cache'
+
+# 2. Build the image with caching and dual tags (SHA and latest)
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build', 
+    '-t', '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA', 
+    '-t', '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:latest',
+    '--cache-from', '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:latest',
+    '.'
+  ]
+  env:
+  - 'DOCKER_BUILDKIT=1'
+  id: 'build-image'
+  waitFor: ['pull-cache']
+
+# 3. Push both tags to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '--all-tags', '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}']
+  id: 'push-image'
+  waitFor: ['build-image']
+
+# 4. Deploy to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      gcloud run deploy ${_SERVICE_NAME} \
+        --image ${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA \
+        --region ${_SERVICE_REGION} \
+        --service-account ${_SERVICE_ACCOUNT} \
+        --allow-unauthenticated \
+        ${_COMMON_FLAGS}
+  id: 'deploy'
+  waitFor: ['push-image']
+
+images:
+- '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA'
+- '${_SERVICE_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE}:latest'
+
+substitutions:
+  _SERVICE_NAME: 'acalmo-api-service'
+  _SERVICE_REGION: 'us-central1'
+  _REPOSITORY: 'acalmo-api'
+  _IMAGE: 'acalmo-api'
+  _SERVICE_ACCOUNT: 'acalmo-api-sa@${PROJECT_ID}.iam.gserviceaccount.com'
+  _COMMON_FLAGS: >-
+    --set-env-vars=GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${_SERVICE_REGION}
+    --set-secrets=TWIN_INSTRUCTIONS=twin-instructions-secret:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  dynamic_substitutions: true

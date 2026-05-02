@@ -12,5 +12,5 @@ def test_app_is_fastapi_instance() -> None:
 def test_app_has_routes() -> None:
     """Test that the app has the expected routes."""
     routes = [route.path for route in app.routes if isinstance(route, APIRoute)]
-    assert "/" in routes
+    assert "/api/v1/twin/chat" in routes
     assert "/health" in routes

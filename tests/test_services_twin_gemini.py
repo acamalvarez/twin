@@ -1,33 +1,39 @@
-from unittest.mock import MagicMock
+from collections.abc import AsyncGenerator
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 from pytest_mock import MockerFixture
 
 from app.core.config import config
-from app.services.chat_gemini import get_chat_stream, get_genai_client
+from app.services.twin_gemini import get_chat_stream, get_genai_client
 
 
 def test_config_defaults() -> None:
     # Verify that config loads with the expected default value
-    assert config.model == "gemini-3-flash-preview"
+    assert config.model == "gemini-2.5-flash"
 
 
-def test_get_chat_stream() -> None:
+@pytest.mark.asyncio
+async def test_get_chat_stream() -> None:
     mock_client = MagicMock()
     mock_chunk = MagicMock()
     mock_chunk.text = "Mocked AI response"
 
-    mock_client.models.generate_content_stream.return_value = [mock_chunk]
+    async def mock_generate() -> AsyncGenerator[MagicMock, None]:
+        yield mock_chunk
+
+    mock_client.aio.models.generate_content_stream = AsyncMock(return_value=mock_generate())
 
     prompt = "Test prompt"
-    stream = get_chat_stream(prompt, mock_client)
+    stream = await get_chat_stream(prompt, mock_client)
 
     # Iterate over the mock stream to verify its content
-    chunks = list(stream)
+    chunks = [chunk async for chunk in stream]
     assert len(chunks) == 1
     assert chunks[0].text == "Mocked AI response"
 
     # Ensure it was called with the correct parameters
-    mock_client.models.generate_content_stream.assert_called_once_with(
+    mock_client.aio.models.generate_content_stream.assert_called_once_with(
         model=config.model,
         contents=prompt,
         config=config.content_config,
@@ -39,7 +45,7 @@ def test_get_genai_client(mocker: MockerFixture) -> None:
     get_genai_client.cache_clear()
 
     # Mock the genai.Client class
-    mock_client_cls = mocker.patch("app.services.chat_gemini.genai.Client")
+    mock_client_cls = mocker.patch("app.services.twin_gemini.genai.Client")
 
     # First call
     client1 = get_genai_client()
@@ -59,23 +65,23 @@ def test_get_genai_client(mocker: MockerFixture) -> None:
     get_genai_client.cache_clear()
 
 
-def test_get_chat_stream_error() -> None:
-    import pytest
+@pytest.mark.asyncio
+async def test_get_chat_stream_error() -> None:
     from google.genai.errors import APIError
 
     mock_client = MagicMock()
 
-    mock_client.models.generate_content_stream.side_effect = APIError(
-        code=500, response_json={"error": {"message": "API error"}}
+    mock_client.aio.models.generate_content_stream = AsyncMock(
+        side_effect=APIError(code=500, response_json={"error": {"message": "API error"}})
     )
 
     prompt = "Test prompt"
 
     with pytest.raises(APIError, match="API error"):
-        get_chat_stream(prompt, mock_client)
+        await get_chat_stream(prompt, mock_client)
 
     # Ensure it was called with the correct parameters
-    mock_client.models.generate_content_stream.assert_called_once_with(
+    mock_client.aio.models.generate_content_stream.assert_called_once_with(
         model=config.model,
         contents=prompt,
         config=config.content_config,

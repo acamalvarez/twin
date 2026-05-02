@@ -9,8 +9,12 @@ services:
       # and includes GEMINI_API_KEY, MODEL, etc., depending on configuration.
       # You can also set/override environment variables here:
       - PORT=8080
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/appuser/.config/gcloud/application_default_credentials.json
     env_file:
       - .env
+    command: uv run fastapi dev app/main.py --host 0.0.0.0 --port 8080
     volumes:
       # Mount the application directory for live reloading locally without rebuilding
       - ./app:/app/app
+      # Mount Windows Google Cloud configuration directory to the container
+      - ${APPDATA}/gcloud:/home/appuser/.config/gcloud:ro
