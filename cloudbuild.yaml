@@ -50,7 +50,7 @@ images:
 substitutions:
   _SERVICE_NAME: 'acalmo-api'
   _SERVICE_REGION: 'us-central1'
-  _REPOSITORY: 'docker-repo'
+  _REPOSITORY: 'acalmo-api'
   _IMAGE: 'acalmo-api'
   _SERVICE_ACCOUNT: 'acalmo-api-sa@${PROJECT_ID}.iam.gserviceaccount.com'
   _COMMON_FLAGS: >-
